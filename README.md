@@ -10,7 +10,6 @@ snippets from simple data sources.
 
 - **Flexible Input Formats**: Supports CSV, JSON, XML, and other text-based formats.
 - **Go Template Engine**: Leverages Go’s powerful templating system for dynamic output.
-- **Piping Support**: Works seamlessly with Unix-style pipelines for input and output.
 
 ## Installation
 
@@ -31,8 +30,7 @@ go install github.com/jon-ski/tpl@latest
 Basic usage involves piping an input file into `tpl`, specifying a Go template file as an argument:
 
 ```sh
-cat input.csv | ./tpl main.tmpl > output.txt
-./tpl -i input.csv -t main.tmpl -o output.txt
+./tpl -i input.csv -t main.tmpl > output.txt
 ```
 
 ### Example: Generating Configuration Files
@@ -52,7 +50,7 @@ address: {{ .ip }}:{{ .port }}
 
 #### Command:
 ```sh
-cat config.csv | ./tpl config.tmpl > config_output.txt
+config.csv | ./tpl -i config.csv -t config.tmpl > config_output.txt
 ```
 
 #### Output (`config_output.txt`):
@@ -88,7 +86,7 @@ type {{ .name }} struct {
 
 #### Command:
 ```sh
-cat structs.json | ./tpl structs.tmpl > models.go
+./tpl -i structs.json -t structs.tmpl > models.go
 ```
 
 #### Output (`models.go`):
@@ -107,7 +105,3 @@ type Product struct {
 ## License
 
 MIT License.
-
----
-
-Let me know if you’d like any modifications! 🚀
