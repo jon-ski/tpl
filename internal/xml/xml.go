@@ -2,9 +2,9 @@ package xml
 
 import (
 	"fmt"
-	"os"
+	"io"
 )
 
-func Parse(inputFile *os.File) (interface{}, error) {
+func Parse(input io.Reader) (interface{}, error) {
 	return nil, fmt.Errorf("not implemented")
 }

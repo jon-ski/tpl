@@ -3,12 +3,12 @@ package csv
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
+	"io"
 )
 
-func Parse(inputFile *os.File) (interface{}, error) {
+func Parse(input io.Reader) (interface{}, error) {
 	// Setup reader
-	reader := csv.NewReader(inputFile)
+	reader := csv.NewReader(input)
 
 	// Read all (to get line count)
 	rows, err := reader.ReadAll()
