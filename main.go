@@ -77,7 +77,7 @@ func main() {
 	slog.Debug("template parsed", slog.String("name", tmpl.Name()), slog.String("templates", tmpl.DefinedTemplates()))
 
 	// Execute template
-	tmpl.ExecuteTemplate(os.Stdout, filepath.Base(*flags.templateFile), data)
+	err = tmpl.ExecuteTemplate(os.Stdout, filepath.Base(*flags.templateFile), data)
 	// tmpl.Templates()[0].Execute(os.Stdout, data)
 	// err = tmpl.ExecuteTemplate(os.Stdout, *flags.templateFile, data)
 	if err != nil {
@@ -87,7 +87,7 @@ func main() {
 	slog.Info("template executed successfully")
 }
 
-func createMap(inputFile *os.File) (interface{}, error) {
+func createMap(inputFile *os.File) (any, error) {
 	// Determine file extension
 	ext := getFileType(inputFile.Name())
 
@@ -178,7 +178,7 @@ func templateFuncs() template.FuncMap {
 		},
 
 		// Lists
-		"list": func(v ...interface{}) []interface{} {
+		"list": func(v ...any) []any {
 			return v
 		},
 		"seq": func(start, end int) []int {
@@ -193,8 +193,8 @@ func templateFuncs() template.FuncMap {
 		},
 
 		// Maps
-		"dict": func(kv ...interface{}) (map[string]interface{}, error) {
-			m := make(map[string]interface{})
+		"dict": func(kv ...any) (map[string]any, error) {
+			m := make(map[string]any)
 			for i := 0; i < len(kv); i += 2 {
 				key, ok := kv[i].(string)
 				if !ok {
@@ -205,7 +205,7 @@ func templateFuncs() template.FuncMap {
 			return m, nil
 		},
 
-		"keys": func(m map[string]interface{}) []string {
+		"keys": func(m map[string]any) []string {
 			list := make([]string, len(m))
 			for k := range m {
 				list = append(list, k)
@@ -214,7 +214,7 @@ func templateFuncs() template.FuncMap {
 		},
 
 		// Marshallers
-		"json": func(v interface{}) string {
+		"json": func(v any) string {
 			b, err := json.Marshal(v)
 			if err != nil {
 				return fmt.Sprintf("error marshalling json: %s", err)
@@ -222,7 +222,7 @@ func templateFuncs() template.FuncMap {
 			return string(b)
 		},
 
-		"xml": func(v interface{}) string {
+		"xml": func(v any) string {
 			b, err := xml.Marshal(v)
 			if err != nil {
 				return fmt.Sprintf("error marshalling xml: %s", err)
