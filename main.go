@@ -125,6 +125,18 @@ func templateFuncs() template.FuncMap {
 			}
 			return i
 		},
+		"min": func(a, b int) int {
+			if a < b {
+				return a
+			}
+			return b
+		},
+		"max": func(a, b int) int {
+			if a > b {
+				return a
+			}
+			return b
+		},
 		"addf": func(i, j float64) float64 {
 			return i + j
 		},
@@ -139,6 +151,18 @@ func templateFuncs() template.FuncMap {
 				return -i
 			}
 			return i
+		},
+		"minf": func(a, b float64) float64 {
+			if a < b {
+				return a
+			}
+			return b
+		},
+		"maxf": func(a, b float64) float64 {
+			if a > b {
+				return a
+			}
+			return b
 		},
 
 		// strings
