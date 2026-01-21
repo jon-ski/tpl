@@ -191,6 +191,9 @@ func templateFuncs() template.FuncMap {
 			}
 			return s
 		},
+		"len": func(l []any) int {
+			return len(l)
+		},
 
 		// Maps
 		"dict": func(kv ...any) (map[string]any, error) {
