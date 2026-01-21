@@ -206,7 +206,7 @@ func templateFuncs() template.FuncMap {
 		},
 
 		"keys": func(m map[string]any) []string {
-			list := make([]string, len(m))
+			list := make([]string, 0, len(m))
 			for k := range m {
 				list = append(list, k)
 			}
