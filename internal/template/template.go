@@ -13,12 +13,34 @@ import (
 	"text/template"
 )
 
-// RunTemplate parses and executes a Go text/template file using the provided data.
+// RunTemplate parses and executes a Go text/template text using the provided data.
+func RunTemplate(t string, data any) error {
+	slog.Debug("starting")
+	// Parse template
+	tmpl, err := template.New("root").Funcs(templateFuncs()).Parse(t)
+	// tmpl, err := template.ParseFiles(*flags.templateFile)
+	if err != nil {
+		return fmt.Errorf("failed to parse template: %w", err)
+	}
+	slog.Debug("template parsed", slog.String("name", tmpl.Name()), slog.String("templates", tmpl.DefinedTemplates()))
+
+	// Execute template
+	err = tmpl.Execute(os.Stdout, data)
+	if err != nil {
+		return fmt.Errorf("failed to execute template: %w", err)
+	}
+
+	slog.Debug("template executed successfully")
+
+	return nil
+}
+
+// RunTemplatePath parses and executes a Go text/template file using the provided data.
 // The template is loaded from templateFilePath, augmented with custom template
 // functions, and executed with its base filename as the template name.
 // Output is written directly to standard output.
 // An error is returned if parsing or execution fails.
-func RunTemplate(templateFilePath string, data any) error {
+func RunTemplatePath(templateFilePath string, data any) error {
 	slog.Debug("starting")
 	// Parse Template file
 	tmpl, err := template.New("root").Funcs(templateFuncs()).ParseFiles(templateFilePath)
