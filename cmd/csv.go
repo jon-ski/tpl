@@ -55,7 +55,7 @@ func (c *CmdCsv) run(ctx *cli.Context, args []string) error {
 	}
 
 	slog.Debug("running template")
-	err = template.RunTemplate(templateString, data)
+	err = template.RunTemplate(templateString, data, ctx.Stdout)
 	if err != nil {
 		return fmt.Errorf("failed to run template: %w", err)
 	}

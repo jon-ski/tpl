@@ -53,7 +53,7 @@ func (c *CmdJson) run(ctx *cli.Context, args []string) error {
 	}
 
 	slog.Debug("running template")
-	err = template.RunTemplate(c.TemplatePath, data)
+	err = template.RunTemplate(c.TemplatePath, data, ctx.Stdout)
 	if err != nil {
 		return fmt.Errorf("failed to run template: %w", err)
 	}

@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-func Parse(input io.Reader) (any, error) {
+func Parse(input io.Reader) ([]map[string]string, error) {
 	// Setup reader
 	reader := csv.NewReader(input)
 
@@ -17,7 +17,7 @@ func Parse(input io.Reader) (any, error) {
 	}
 
 	// Setup data map
-	data := make([]map[string]any, len(rows[1:]))
+	data := make([]map[string]string, len(rows[1:]))
 
 	// Setup header
 	header := rows[0]
@@ -29,7 +29,7 @@ func Parse(input io.Reader) (any, error) {
 
 	// Loop over rows, filling out the data map
 	for i, row := range rows[1:] {
-		rowData := make(map[string]any)
+		rowData := make(map[string]string)
 		for j, value := range row {
 			rowData[header[j]] = value
 		}
