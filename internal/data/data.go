@@ -2,7 +2,9 @@
 package data
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -65,6 +67,8 @@ func (d DataSource) getFileData() (any, error) {
 	switch ext {
 	case "csv":
 		return d.getCsvData()
+	case "json":
+		return d.getJsonData()
 	}
 
 	return nil, fmt.Errorf("format not supported: %s", ext)
@@ -79,6 +83,17 @@ func (d DataSource) getCsvData() ([]map[string]string, error) {
 	if err != nil {
 		return data, fmt.Errorf("failed to parse csv: %w", err)
 	}
+	return data, nil
+}
+
+func (d DataSource) getJsonData() (map[string]any, error) {
+	f, err := os.Open(d.Path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open file: %w", err)
+	}
+	b, err := io.ReadAll(f)
+	var data map[string]any
+	err = json.Unmarshal(b, &data)
 	return data, nil
 }
 
