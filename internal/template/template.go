@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"log/slog"
 	"math"
 	"os"
@@ -14,7 +15,7 @@ import (
 )
 
 // RunTemplate parses and executes a Go text/template text using the provided data.
-func RunTemplate(t string, data any) error {
+func RunTemplate(t string, data any, w io.Writer) error {
 	slog.Debug("starting")
 	// Parse template
 	tmpl, err := template.New("root").Funcs(templateFuncs()).Parse(t)
@@ -25,10 +26,11 @@ func RunTemplate(t string, data any) error {
 	slog.Debug("template parsed", slog.String("name", tmpl.Name()), slog.String("templates", tmpl.DefinedTemplates()))
 
 	// Execute template
-	err = tmpl.Execute(os.Stdout, data)
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		return fmt.Errorf("failed to execute template: %w", err)
 	}
+	w.Write([]byte("\n"))
 
 	slog.Debug("template executed successfully")
 

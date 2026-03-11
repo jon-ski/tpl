@@ -10,10 +10,15 @@ import (
 	"github.com/jon-ski/tpl/internal/util"
 )
 
+// CmdCsv is the cmd subcommand used to ingest csv data before running the template
+//
+// tpl csv '{{ .csv.rows }}' input.csv
+// cat input.csv | tpl csv '{{ .csv.rows }}'
+// cat input.csv | tpl csv -t main.tmpl
+// However, initial function will expect stdin rather than file and first argument always the template
 type CmdCsv struct {
 	Cmd *cli.Command
 
-	InputPath    string
 	TemplatePath string
 	Verbose      bool
 }
@@ -32,17 +37,13 @@ func (c *CmdCsv) run(ctx *cli.Context, args []string) error {
 		logLevel.Set(slog.LevelDebug)
 	}
 
-	if c.TemplatePath == "" {
-		return fmt.Errorf("no template file specified")
+	if len(args) < 1 {
+		return fmt.Errorf("expected template argument")
 	}
+	templateString := args[0]
 
-	inputPath := ""
-	if len(args) > 0 {
-		inputPath = args[0]
-	}
-
-	slog.Debug("initializing input reader")
-	input, err := util.GetInput(inputPath)
+	// TODO: get file path from flag if provided
+	input, err := util.GetInput("")
 	if err != nil {
 		return fmt.Errorf("failed to setup input data: %w", err)
 	}
@@ -54,7 +55,7 @@ func (c *CmdCsv) run(ctx *cli.Context, args []string) error {
 	}
 
 	slog.Debug("running template")
-	err = template.RunTemplate(c.TemplatePath, data)
+	err = template.RunTemplate(templateString, data, ctx.Stdout)
 	if err != nil {
 		return fmt.Errorf("failed to run template: %w", err)
 	}
